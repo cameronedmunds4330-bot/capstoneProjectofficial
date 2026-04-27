@@ -1,68 +1,71 @@
-class AccountMenuPage {
-  // Top-right user icon (MTECH-QA icon)
-  get menuButton() {
-    return $('svg.fui-Icon'); 
-  }
+import BasePage from './BasePage.js';
 
-  // Settings button inside the user account menu
-  get settingsButton() {
-    return $('[data-testid="account-control-settings-button"]');
-  }
+class AccountMenuPage extends BasePage {
 
-  // Terms of Service tab
-  get termsOfService() {
-    return $('[data-testid="menu-terms-of-service-link"]');
-  }
+    // Top-right account menu button (avatar / initials)
+    get accountMenuButton() {
+        return $('[data-testid="account-menu-button"]');
+    }
 
-  // Privacy Policy tab
-  get privacyPolicy() {
-    return $('[data-testid="menu-privacy-policy-link"]');
-  }
+    // Menu items
+    get settingsButton() {
+        return $('[data-testid="account-menu-settings"]');
+    }
 
-  // Data Processing Agreement tab
-  get dataProcessingAgreement() {
-    return $('[data-testid="menu-data-processing-agreement-link"]');
-  }
+    get privacyPolicyButton() {
+        return $('[data-testid="account-menu-privacy-policy"]');
+    }
 
-  // Logout button
-  get logoutButton() {
-    return $('[data-testid="menu-logout-button"]');
-  }
+    get termsOfServiceButton() {
+        return $('[data-testid="account-menu-tos"]');
+    }
 
-  async openMenu() {
-    await this.menuButton.waitForDisplayed();
-    await this.menuButton.click();
-  }
+    get dataProcessingButton() {
+        return $('[data-testid="account-menu-dpa"]');
+    }
 
-  async openSettings() {
-    await this.openMenu();
-    await this.settingsButton.waitForDisplayed();
-    await this.settingsButton.click();
-  }
+    // Close buttons inside modals (all share same selector in your doc)
+    get modalCloseButton() {
+        return $('[data-testid="login-tos-close"]');
+    }
 
-  async openTerms() {
-    await this.openMenu();
-    await this.termsOfService.waitForDisplayed();
-    await this.termsOfService.click();
-  }
+    /**
+     * Opens the account menu
+     */
+    async openMenu() {
+        await this.click(this.accountMenuButton);
+    }
 
-  async openPrivacy() {
-    await this.openMenu();
-    await this.privacyPolicy.waitForDisplayed();
-    await this.privacyPolicy.click();
-  }
+    /**
+     * Opens Privacy Policy modal
+     */
+    async openPrivacyPolicy() {
+        await this.openMenu();
+        await this.click(this.privacyPolicyButton);
+    }
 
-  async openDPA() {
-    await this.openMenu();
-    await this.dataProcessingAgreement.waitForDisplayed();
-    await this.dataProcessingAgreement.click();
-  }
+    /**
+     * Opens Terms of Service modal
+     */
+    async openTermsOfService() {
+        await this.openMenu();
+        await this.click(this.termsOfServiceButton);
+    }
 
-  async logout() {
-    await this.openMenu();
-    await this.logoutButton.waitForDisplayed();
-    await this.logoutButton.click();
-  }
+    /**
+     * Opens Data Processing Agreement modal
+     */
+    async openDataProcessingAgreement() {
+        await this.openMenu();
+        await this.click(this.dataProcessingButton);
+    }
+
+    /**
+     * Closes any modal that uses the shared close button
+     */
+    async closeModal() {
+        await this.click(this.modalCloseButton);
+    }
 }
 
 export default new AccountMenuPage();

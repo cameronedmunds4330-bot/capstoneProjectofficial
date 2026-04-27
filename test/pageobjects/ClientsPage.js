@@ -1,109 +1,73 @@
-import path from 'node:path';
+import BasePage from './BasePage.js';
 
-class ClientsPage {
-  // Navigation
-  get navLink() {
-    return $('[data-testid="vert-nav-clients-parties"]');
-  }
+class ClientsPage extends BasePage {
 
-  // 3-dots menu (row actions)
-  get threeDotsMenu() {
-    return $('[aria-label="More items"]');
-  }
+    //
+    // LEFT NAV
+    //
+    get navClients() {
+        return $('[data-testid="vert-nav-clients-parties"]');
+    }
 
-  // Delete option inside 3-dots menu
-  get deleteMenuItem() {
-    return $('[data-testid="custom-data-table-context-menu-item-Delete"]');
-  }
+    //
+    // MAIN TABLE / GRID
+    //
+    get clientsGrid() {
+        return $('div.fui-DataGrid.fui-Table');
+    }
 
-  // Confirmation button in delete dialog
-  get confirmDeleteButton() {
-    return $('[data-testid="confirmation-dialog-confirm-button"]');
-  }
+    //
+    // SEARCH INPUT (if present)
+    //
+    get searchInput() {
+        return $('input[type="search"], [data-testid="clients-search-input"]');
+    }
 
-  // Success toast title (used for delete/import success)
-  get successToast() {
-    return $('div.fui-ToastTitle');
-  }
+    //
+    // 3-DOT MENU ITEMS
+    //
+    get menuEdit() {
+        return $('[data-testid="custom-data-table-context-menu-item-Edit"]');
+    }
 
-  // Import button on page (opens import modal)
-  get importButton() {
-    return $('[data-testid="import-parties-button"]');
-  }
+    get menuDelete() {
+        return $('[data-testid="custom-data-table-context-menu-item-Delete"]');
+    }
 
-  // Hidden file input inside import modal
-  get fileInput() {
-    return $('input[type="file"]');
-  }
+    //
+    // DELETE CONFIRMATION
+    //
+    get confirmDeleteYes() {
+        return $('[data-testid="confirmation-dialog-confirm-button"]');
+    }
 
-  // Upload/Import button inside import modal
-  get uploadSubmitButton() {
-    return $('[data-testid="import-parties-upload-button"]');
-  }
+    //
+    // BULK DELETE BUTTON
+    //
+    get bulkDeleteButton() {
+        return $('[data-testid="parties-delete-selected-button"]');
+    }
 
-  // Cancel/Close button inside import modal
-  get uploadCancelButton() {
-    return $('[data-testid="import-parties-close-button"]');
-  }
+    //
+    // PAGE ACTIONS
+    //
 
-  // Search input
-  get searchInput() {
-    return $('input[placeholder="Search"]');
-  }
+    async openClientsPage() {
+        await this.open('/account/clientsParties');
+        await this.click(this.navClients);
+        await this.waitForVisible(this.clientsGrid);
+    }
 
-  // Table rows
-  get tableRows() {
-    return $$('table tbody tr');
-  }
+    async searchClient(name) {
+        await this.type(this.searchInput, name);
+        await browser.keys('Enter');
+    }
 
-  // Optional: no-results message (if present in UI)
-  get noResultsMessage() {
-    return $('//*[contains(text(), "No results") or contains(text(), "No data")]');
-  }
-
-  async open() {
-    await this.navLink.waitForDisplayed({ timeout: 15000 });
-    await this.navLink.click();
-  }
-
-  async deleteFirstClient() {
-    await this.threeDotsMenu.waitForDisplayed({ timeout: 15000 });
-    await this.threeDotsMenu.click();
-
-    await this.deleteMenuItem.waitForDisplayed({ timeout: 15000 });
-    await this.deleteMenuItem.click();
-
-    await this.confirmDeleteButton.waitForDisplayed({ timeout: 15000 });
-    await this.confirmDeleteButton.click();
-  }
-
-  async importCSV(filename) {
-    await this.importButton.waitForDisplayed({ timeout: 15000 });
-    await this.importButton.click();
-
-    const localPath = path.resolve(`test/data/${filename}`);
-    const remotePath = await browser.uploadFile(localPath);
-
-    await this.fileInput.waitForExist({ timeout: 15000 });
-    await this.fileInput.setValue(remotePath);
-
-    await this.uploadSubmitButton.waitForEnabled({ timeout: 15000 });
-    await this.uploadSubmitButton.click();
-
-    await this.successToast.waitForDisplayed({ timeout: 15000 });
-  }
-
-  async search(term) {
-    await this.searchInput.waitForDisplayed({ timeout: 15000 });
-    await this.searchInput.setValue(term);
-    await browser.pause(400);
-  }
-
-  async clearSearch() {
-    await this.searchInput.waitForDisplayed({ timeout: 15000 });
-    await this.searchInput.setValue('');
-    await browser.pause(400);
-  }
+    async openClientRow(name) {
+        const row = $(`//div[@role="gridcell" and contains(., "${name}")]`);
+        await this.waitForVisible(row);
+        await row.click();
+    }
 }
 
 export default new ClientsPage();

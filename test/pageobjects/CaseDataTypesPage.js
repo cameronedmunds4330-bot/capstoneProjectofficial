@@ -1,61 +1,77 @@
-class CaseDataTypesPage {
-  // Account Settings tab
-  get accountSettingsTab() {
-    return $('[data-testid="vert-nav-account-settings"]');
-  }
+import BasePage from './BasePage.js';
 
-  // Case Data Types tab
-  get caseDataTypesTab() {
-    return $('[data-testid="account-settings-case-data-tab"]');
-  }
+class CaseDataTypesPage extends BasePage {
 
-  // Add new status button (plus icon)
-  get addStatusButton() {
-    return $('[data-testid="case-type-panel-add-button"]');
-  }
+    //
+    // Navigation
+    //
+    get accountSettingsTab() {
+        return $('[data-testid="vert-nav-account-settings"]');
+    }
 
-  // Status input
-  get statusInput() {
-    return $('[data-testid="add-edit-status-status-input"]');
-  }
+    get caseDataTypesTab() {
+        return $('[data-testid="account-settings-case-data-tab"]');
+    }
 
-  // Description input
-  get descriptionInput() {
-    return $('[data-testid="add-edit-status-description-input"]');
-  }
+    //
+    // Create / Edit Case Status
+    //
+    get statusInput() {
+        return $('[data-testid="add-edit-status-status-input"]');
+    }
 
-  // Save button
-  get saveButton() {
-    return $('[data-testid="add-edit-status-save-button"]');
-  }
+    get statusDescriptionInput() {
+        return $('[data-testid="add-edit-status-description-input"]');
+    }
 
-  // Cancel button
-  get cancelButton() {
-    return $('[data-testid="add-edit-status-cancel-button"]');
-  }
+    get statusSaveButton() {
+        return $('[data-testid="add-edit-status-save-button"]');
+    }
 
-  async open() {
-    await this.accountSettingsTab.waitForDisplayed();
-    await this.accountSettingsTab.click();
+    get statusCancelButton() {
+        return $('[data-testid="add-edit-status-cancel-button"]');
+    }
 
-    await this.caseDataTypesTab.waitForDisplayed();
-    await this.caseDataTypesTab.click();
-  }
+    //
+    // Status Groups (New, Active, Completed, Closed, Removed)
+    // You provided the pattern: data-testid="status-group-{groupName}"
+    //
+    statusGroup(groupName) {
+        return $(`[data-testid="status-group-${groupName}"]`);
+    }
 
-  async createStatus(name, description) {
-    await this.addStatusButton.waitForDisplayed();
-    await this.addStatusButton.click();
+    statusGroupContent(groupName) {
+        return $(`[data-testid="status-group-${groupName}-content"]`);
+    }
 
-    await this.statusInput.waitForDisplayed();
-    await this.statusInput.setValue(name);
+    //
+    // Expense Types
+    //
+    get expenseTypeInput() {
+        return $('[data-testid="expense-type-input"]');
+    }
 
-    await this.descriptionInput.waitForDisplayed();
-    await this.descriptionInput.setValue(description);
+    get expenseTypeAddButton() {
+        return $('[data-testid="expense-type-add"]');
+    }
 
-    await this.saveButton.waitForDisplayed();
-    await this.saveButton.click();
-  }
+    //
+    // Modal Close Button (ToS, Privacy, DPA all share this)
+    //
+    get modalCloseButton() {
+        return $('[data-testid="login-tos-close"]');
+    }
+
+    //
+    // Navigation Flow
+    //
+    async openCaseDataTypes() {
+        await this.accountSettingsTab.waitForDisplayed({ timeout: 15000 });
+        await this.accountSettingsTab.click();
+
+        await this.caseDataTypesTab.waitForDisplayed({ timeout: 15000 });
+        await this.caseDataTypesTab.click();
+    }
 }
 
 export default new CaseDataTypesPage();
-
